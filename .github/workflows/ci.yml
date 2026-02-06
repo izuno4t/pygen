@@ -21,7 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: tamasfe/taplo@v1
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install taplo
+        run: cargo install taplo-cli --version 0.10.0
       - name: taplo check (root)
         run: taplo check --config taplo.toml
       - name: taplo check (plain)
