@@ -1,4 +1,4 @@
-.PHONY: help install dev test test-cov lint format typecheck check clean
+.PHONY: help install dev test test-cov lint format typecheck check clean run
 
 help:
 	@echo "Available commands:"
@@ -10,6 +10,7 @@ help:
 	@echo "  make format     - Format code"
 	@echo "  make typecheck  - Run type checker"
 	@echo "  make check      - Run all checks (lint, typecheck, test)"
+	@echo "  make run        - Run application"
 	@echo "  make clean      - Remove build artifacts"
 
 install:
@@ -36,6 +37,9 @@ typecheck:
 	uv run mypy .
 
 check: lint typecheck test
+
+run:
+	uv run python -m project_name
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage
