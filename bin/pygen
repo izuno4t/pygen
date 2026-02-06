@@ -155,6 +155,16 @@ if [[ -z "$RUNTIME_VERSION" ]]; then
   fi
 fi
 
+PYTHON_BIN=""
+if command -v python3 >/dev/null 2>&1; then
+  PYTHON_BIN="python3"
+elif command -v python >/dev/null 2>&1; then
+  PYTHON_BIN="python"
+else
+  echo "Python runtime not found. Python is required to generate projects." >&2
+  exit 1
+fi
+
 if [[ "$USE_CWD_DEST" == "true" ]]; then
   if find "$DEST_DIR" -mindepth 1 -maxdepth 1 ! -name ".git" | read -r _; then
     echo "Warning: destination is not empty. Existing files may be overwritten." >&2
@@ -181,12 +191,36 @@ if [[ -d "$DEST_DIR/src/project_name_domain" ]]; then
   mv "$DEST_DIR/src/project_name_domain" "$DEST_DIR/src/$DOMAIN_PACKAGE"
 fi
 
-find "$DEST_DIR" -type f \( -name "*.py" -o -name "*.toml" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.ini" -o -name "*.json" \) \
-  -print0 | xargs -0 perl -pi -e "s/project_name_domain/$DOMAIN_PACKAGE/g"
-find "$DEST_DIR" -type f \( -name "*.py" -o -name "*.toml" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.ini" -o -name "*.json" \) \
-  -print0 | xargs -0 perl -pi -e "s/project_name/$PACKAGE_NAME/g"
-find "$DEST_DIR" -type f \( -name "*.py" -o -name "*.toml" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.ini" -o -name "*.json" \) \
-  -print0 | xargs -0 perl -pi -e "s/project-name/$PROJECT_NAME/g"
+"$PYTHON_BIN" - "$DEST_DIR" "$PROJECT_NAME" "$PACKAGE_NAME" "$DOMAIN_PACKAGE" <<'PY'
+from __future__ import annotations
+
+from pathlib import Path
+import sys
+
+dest_dir = Path(sys.argv[1])
+project_name = sys.argv[2]
+package_name = sys.argv[3]
+domain_package = sys.argv[4]
+
+suffixes = {".py", ".toml", ".md", ".yml", ".yaml", ".ini", ".json"}
+
+for path in dest_dir.rglob("*"):
+    if not path.is_file():
+        continue
+    if path.suffix.lower() not in suffixes:
+        continue
+    try:
+        content = path.read_text(encoding="utf-8")
+    except Exception:
+        content = path.read_text(encoding="utf-8", errors="ignore")
+    updated = (
+        content.replace("project_name_domain", domain_package)
+        .replace("project_name", package_name)
+        .replace("project-name", project_name)
+    )
+    if updated != content:
+        path.write_text(updated, encoding="utf-8")
+PY
 
 echo "$RUNTIME_VERSION" > "$DEST_DIR/.python-version"
 
