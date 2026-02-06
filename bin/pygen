@@ -35,7 +35,7 @@ maybe_self_update() {
   local remote_sum local_sum new_file sum_file
   new_file="${1}.new"
   sum_file="${1}.sha256"
-  if ! curl -fsSL -o "$sum_file" "$SELF_UPDATE_SUM_URL"; then
+  if ! curl -fsSL -L -o "$sum_file" "$SELF_UPDATE_SUM_URL"; then
     return
   fi
   remote_sum="$(cat "$sum_file")"
@@ -51,7 +51,7 @@ maybe_self_update() {
     return
   fi
 
-  if curl -fsSL -o "$new_file" "$SELF_UPDATE_URL"; then
+  if curl -fsSL -L -o "$new_file" "$SELF_UPDATE_URL"; then
     if sha256_verify "$new_file" "$remote_sum"; then
       chmod +x "$new_file"
       mv "$new_file" "$1"

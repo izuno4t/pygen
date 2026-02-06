@@ -6,7 +6,7 @@ BASE="https://github.com/izuno4t/pygen/releases/latest/download"
 BIN_DIR="${HOME}/bin"
 BOOT="${BIN_DIR}/pygen"
 
-fetch() { curl -fsSL "$1" -o "$2"; }
+fetch() { curl -fsSL -L "$1" -o "$2"; }
 sha256_verify() {
   file="$1"
   sum="$2"

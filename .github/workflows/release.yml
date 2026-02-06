@@ -13,9 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Generate checksums
+        run: sha256sum bin/pygen | awk '{print $1}' > bin/pygen.sha256
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
             bin/pygen
+            bin/pygen.sha256
             bin/install.sh
+          make_latest: true
