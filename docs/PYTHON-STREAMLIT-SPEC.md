@@ -204,13 +204,13 @@ app = "project_name.app:main"
 ### 4.1 Ruff追加設定
 
 ```toml
-[tool.ruff.lint]
+[tool.ruff]
 # 汎用設定に追加
 extend-ignore = [
     "B008",   # function call in default argument (Streamlit Depends対応)
 ]
 
-[tool.ruff.lint.per-file-ignores]
+[tool.ruff.per-file-ignores]
 "src/**/pages/*.py" = [
     "E402",   # module level import not at top of file (Streamlitのページ構造対応)
 ]

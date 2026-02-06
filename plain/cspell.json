@@ -13,5 +13,37 @@
     "**/.venv/**",
     "**/uv.lock"
   ],
-  "words": []
+  "words": [
+    "abstractmethod",
+    "addopts",
+    "asyncio",
+    "capsys",
+    "casefold",
+    "cbox",
+    "celltext",
+    "direnv",
+    "filterwarnings",
+    "grouphead",
+    "htmlcov",
+    "isort",
+    "keyevents",
+    "keyhelp",
+    "maxerr",
+    "mypy",
+    "nosemgrep",
+    "numer",
+    "nums",
+    "pycache",
+    "pyenv",
+    "pyfile",
+    "pypackages",
+    "pytest",
+    "pytype",
+    "repr",
+    "shortkeys",
+    "sqlym",
+    "testpaths",
+    "venv",
+    "visibilty"
+  ]
 }

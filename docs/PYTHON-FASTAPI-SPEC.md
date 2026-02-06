@@ -210,7 +210,7 @@ asyncio_default_fixture_loop_scope = "function"
 ### 3.2 Ruff追加設定
 
 ```toml
-[tool.ruff.lint]
+[tool.ruff]
 extend-ignore = [
     "B008",   # function call in default argument (FastAPI Depends対応)
 ]

@@ -199,7 +199,7 @@ exclude = [
     "venv",
 ]
 
-[tool.ruff.lint]
+[tool.ruff]
 select = [
     "E",      # pycodestyle errors
     "W",      # pycodestyle warnings
@@ -227,14 +227,14 @@ ignore = [
 fixable = ["ALL"]
 unfixable = []
 
-[tool.ruff.lint.per-file-ignores]
+[tool.ruff.per-file-ignores]
 "tests/**/*.py" = [
     "S101",   # assert使用許可
     "ARG",    # 未使用引数許可（フィクスチャ）
     "PLR2004", # マジックナンバー許可
 ]
 
-[tool.ruff.lint.isort]
+[tool.ruff.isort]
 known-first-party = ["project_name"]
 force-single-line = false
 lines-after-imports = 2
