@@ -20,6 +20,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "sqlym>=0.2.0",
 ]
 
 [project.optional-dependencies]

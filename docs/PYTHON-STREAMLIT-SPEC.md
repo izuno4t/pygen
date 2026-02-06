@@ -17,7 +17,7 @@
 ### 1.2 Streamlitの特徴
 
 | 特徴 | 説明 |
-|------|------|
+| --- | --- |
 | スクリプト実行モデル | ユーザー操作のたびにスクリプト全体が再実行される |
 | セッション状態 | `st.session_state` で再実行間のデータを保持 |
 | マルチページ対応 | `st.navigation` / `st.Page` または `pages/` ディレクトリ |
@@ -29,7 +29,7 @@
 
 ### 2.1 推奨構造（マルチページアプリ）
 
-```
+```text
 project-name/
 ├── .devcontainer/                 # Dev Container設定（オプション）
 │   └── devcontainer.json
@@ -84,7 +84,7 @@ project-name/
 
 ### 2.2 シンプル構造（単一ページ / 小規模アプリ）
 
-```
+```text
 project-name/
 ├── .streamlit/
 │   ├── config.toml
@@ -157,7 +157,7 @@ admin_password = "change_me"
 ### 3.3 シークレット管理のルール
 
 | ファイル | Git管理 | 用途 |
-|---------|--------|------|
+| --- | --- | --- |
 | `secrets.toml.example` | ✅ 含める | テンプレート |
 | `secrets.toml` | ❌ 除外 | 実際のシークレット |
 | `.env` | ❌ 除外 | 環境変数（代替手段） |
@@ -178,16 +178,18 @@ dependencies = [
     "streamlit>=1.30",
     "pydantic>=2.0",
     "pandas>=2.0",
+    "httpx>=0.27",
     # 必要に応じて追加
     # "plotly>=5.0",
     # "altair>=5.0",
-    # "sqlalchemy>=2.0",
+    # "sqlym>=0.2.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=4.0",
+    "pytest-asyncio>=0.23",
     "mypy>=1.8",
     "ruff>=0.4",
     "pre-commit>=3.6",
@@ -231,54 +233,54 @@ ignore_missing_imports = true
 
 # デフォルトターゲット
 help:
-	@echo "Available commands:"
-	@echo "  make install    - Install production dependencies"
-	@echo "  make dev        - Install all dependencies (including dev)"
-	@echo "  make test       - Run tests"
-	@echo "  make lint       - Run linter"
-	@echo "  make format     - Format code"
-	@echo "  make typecheck  - Run type checker"
-	@echo "  make check      - Run all checks (lint, typecheck, test)"
-	@echo "  make run        - Run Streamlit app"
-	@echo "  make clean      - Remove build artifacts"
+    @echo "Available commands:"
+    @echo "  make install    - Install production dependencies"
+    @echo "  make dev        - Install all dependencies (including dev)"
+    @echo "  make test       - Run tests"
+    @echo "  make lint       - Run linter"
+    @echo "  make format     - Format code"
+    @echo "  make typecheck  - Run type checker"
+    @echo "  make check      - Run all checks (lint, typecheck, test)"
+    @echo "  make run        - Run Streamlit app"
+    @echo "  make clean      - Remove build artifacts"
 
 # 依存関係
 install:
-	uv sync
+    uv sync
 
 dev:
-	uv sync --dev
-	uv run pre-commit install
-	@echo "Don't forget to copy .streamlit/secrets.toml.example to .streamlit/secrets.toml"
+    uv sync --dev
+    uv run pre-commit install
+    @echo "Don't forget to copy .streamlit/secrets.toml.example to .streamlit/secrets.toml"
 
 # テスト
 test:
-	uv run pytest
+    uv run pytest
 
 # コード品質
 lint:
-	uv run ruff check .
+    uv run ruff check .
 
 format:
-	uv run ruff format .
-	uv run ruff check --fix .
+    uv run ruff format .
+    uv run ruff check --fix .
 
 typecheck:
-	uv run mypy .
+    uv run mypy .
 
 check: lint typecheck test
 
 # Streamlitアプリ実行
 run:
-	uv run streamlit run src/project_name/app.py
+    uv run streamlit run src/project_name/app.py
 
 run-dev:
-	uv run streamlit run src/project_name/app.py --server.runOnSave=true
+    uv run streamlit run src/project_name/app.py --server.runOnSave=true
 
 # クリーンアップ
 clean:
-	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage
-	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage
+    find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 ```
 
 ---
@@ -631,10 +633,10 @@ def get_database_connection():
     Returns:
         データベース接続オブジェクト
     """
-    from sqlalchemy import create_engine
+    from sqlym import Sqlym
 
     connection_string = st.secrets["database"]["connection_string"]
-    return create_engine(connection_string)
+    return Sqlym(connection_string)
 
 
 @st.cache_resource
@@ -655,7 +657,7 @@ def load_ml_model():
 ### 8.3 キャッシュ使い分け
 
 | デコレータ | 用途 | キャッシュ範囲 |
-|-----------|------|--------------|
+| --- | --- | --- |
 | `@st.cache_data` | データ（DataFrame、dict等） | 全ユーザー共有 |
 | `@st.cache_resource` | リソース（DB接続、MLモデル等） | 全ユーザー共有 |
 | `st.session_state` | ユーザー固有の状態 | セッション単位 |
@@ -733,7 +735,7 @@ def get_secret(key: str, default: Any = None) -> Any:
 ### 10.1 Streamlitアプリのテスト戦略
 
 | レイヤー | テスト方法 | ツール |
-|---------|----------|--------|
+| --- | --- | --- |
 | ビジネスロジック | ユニットテスト | pytest |
 | データ処理 | ユニットテスト | pytest + pandas |
 | UIコンポーネント | 限定的（ロジック分離推奨） | - |
@@ -929,7 +931,7 @@ uv run streamlit run src/project_name/app.py
 ## 付録B: よく使うStreamlit API
 
 | API | 用途 |
-|-----|------|
+| --- | --- |
 | `st.set_page_config()` | ページ設定（タイトル、アイコン、レイアウト） |
 | `st.navigation()` / `st.Page()` | マルチページナビゲーション |
 | `st.session_state` | セッション状態管理 |
@@ -944,8 +946,8 @@ uv run streamlit run src/project_name/app.py
 
 ---
 
-**改訂履歴**
+## 改訂履歴
 
 | バージョン | 日付 | 内容 |
-|-----------|------|------|
+| --- | --- | --- |
 | 1.0 | 2025-01 | 初版作成 |

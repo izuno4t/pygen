@@ -22,7 +22,7 @@
 ### 1.2 技術スタック選定理由
 
 | カテゴリ | 採用ツール | 選定理由 |
-|---------|-----------|---------|
+| --- | --- | --- |
 | パッケージ管理 | **uv** | pip比10-100倍高速、Rustベース、オールインワン |
 | リンター/フォーマッター | **Ruff** | Flake8+Black+isort置換、超高速、単一ツール |
 | 型チェッカー | **mypy** | デファクトスタンダード、厳格な型検査 |
@@ -44,7 +44,7 @@
 
 ### 2.2 ディレクトリ構造
 
-```
+```text
 project-name/
 ├── .devcontainer/                 # Dev Container設定（オプション）
 │   ├── devcontainer.json
@@ -91,7 +91,7 @@ project-name/
 ### 2.3 命名規則
 
 | 対象 | 規則 | 例 |
-|------|------|-----|
+| --- | --- | --- |
 | プロジェクト名 | ケバブケース | `my-awesome-app` |
 | パッケージ名 | スネークケース | `my_awesome_app` |
 | モジュール名 | スネークケース | `data_loader.py` |
@@ -441,7 +441,7 @@ jobs:
 #### CIで実行すべきコマンド一覧
 
 | チェック項目 | コマンド |
-|-------------|---------|
+| --- | --- |
 | リントチェック | `uv run ruff check .` |
 | フォーマットチェック | `uv run ruff format --check .` |
 | 型チェック | `uv run mypy .` |
@@ -527,7 +527,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #### Dev Containerのメリット
 
 | メリット | 説明 |
-|---------|------|
+| --- | --- |
 | 環境統一 | 「自分のマシンでは動く」問題を完全解消 |
 | 高速オンボーディング | clone → VSCodeで開く → 即開発可能 |
 | ローカル環境クリーン | Python/依存関係は全てコンテナ内 |
@@ -542,57 +542,57 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # デフォルトターゲット: ヘルプ表示
 help:
-	@echo "Available commands:"
-	@echo "  make install    - Install production dependencies"
-	@echo "  make dev        - Install all dependencies (including dev)"
-	@echo "  make test       - Run tests"
-	@echo "  make test-cov   - Run tests with coverage"
-	@echo "  make lint       - Run linter"
-	@echo "  make format     - Format code"
-	@echo "  make typecheck  - Run type checker"
-	@echo "  make check      - Run all checks (lint, typecheck, test)"
-	@echo "  make clean      - Remove build artifacts"
+    @echo "Available commands:"
+    @echo "  make install    - Install production dependencies"
+    @echo "  make dev        - Install all dependencies (including dev)"
+    @echo "  make test       - Run tests"
+    @echo "  make test-cov   - Run tests with coverage"
+    @echo "  make lint       - Run linter"
+    @echo "  make format     - Format code"
+    @echo "  make typecheck  - Run type checker"
+    @echo "  make check      - Run all checks (lint, typecheck, test)"
+    @echo "  make clean      - Remove build artifacts"
 
 # 依存関係インストール
 install:
-	uv sync
+    uv sync
 
 dev:
-	uv sync --dev
-	uv run pre-commit install
+    uv sync --dev
+    uv run pre-commit install
 
 # テスト
 test:
-	uv run pytest
+    uv run pytest
 
 test-cov:
-	uv run pytest --cov --cov-report=html --cov-report=term-missing
+    uv run pytest --cov --cov-report=html --cov-report=term-missing
 
 # コード品質
 lint:
-	uv run ruff check .
+    uv run ruff check .
 
 format:
-	uv run ruff format .
-	uv run ruff check --fix .
+    uv run ruff format .
+    uv run ruff check --fix .
 
 typecheck:
-	uv run mypy .
+    uv run mypy .
 
 # 全チェック実行
 check: lint typecheck test
 
 # クリーンアップ
 clean:
-	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage
-	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-	find . -type f -name "*.pyc" -delete 2>/dev/null || true
+    rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage
+    find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    find . -type f -name "*.pyc" -delete 2>/dev/null || true
 ```
 
 #### Makefileのメリット
 
 | メリット | 説明 |
-|---------|------|
+| --- | --- |
 | コマンド短縮 | `uv run pytest --cov...` → `make test-cov` |
 | 自己文書化 | `make help` で使えるコマンド一覧表示 |
 | CI/CDと統一 | ローカルもCIも同じコマンドで実行 |
@@ -728,7 +728,7 @@ from project_name.utils.helpers import format_date
 
 ### 7.1 テストファイル構成
 
-```
+```text
 tests/
 ├── __init__.py
 ├── conftest.py          # 共通フィクスチャ
@@ -951,7 +951,7 @@ logs/
 
 ### 8.2 .python-version
 
-```
+```text
 3.11
 ```
 
@@ -1089,7 +1089,7 @@ make test
 ### uvコマンド（直接実行）
 
 | 用途 | コマンド |
-|------|---------|
+| --- | --- |
 | 依存関係追加 | `uv add <package>` |
 | 開発依存追加 | `uv add --dev <package>` |
 | 依存関係同期 | `uv sync` |
@@ -1105,7 +1105,7 @@ make test
 ### Makeコマンド（ショートカット）
 
 | 用途 | コマンド |
-|------|---------|
+| --- | --- |
 | ヘルプ表示 | `make help` |
 | 開発環境セットアップ | `make dev` |
 | テスト実行 | `make test` |
@@ -1118,9 +1118,9 @@ make test
 
 ---
 
-**改訂履歴**
+## 改訂履歴
 
 | バージョン | 日付 | 内容 |
-|-----------|------|------|
+| --- | --- | --- |
 | 1.0 | 2025-01 | 初版作成 |
 | 1.1 | 2025-01 | Makefile追加、.env.example追加、Dev Container設定追加、CI/CD設定を汎用化 |

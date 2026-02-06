@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 import streamlit as st
+
 
 T = TypeVar("T")
 
@@ -32,7 +33,7 @@ def init_session_state() -> None:
 
 
 def get_state(key: str, default: T | None = None) -> T | None:
-    return st.session_state.get(key, default)
+    return cast("T | None", st.session_state.get(key, default))
 
 
 def set_state(key: str, value: Any) -> None:

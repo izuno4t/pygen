@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
     allowed_hosts: list[str] = Field(default_factory=lambda: ["*"])
 
-    secret_key: str = Field(..., min_length=32)
+    secret_key: str = "change-me-change-me-change-me-change"
     access_token_expire_minutes: int = 30
     algorithm: str = "HS256"
 

@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from project_name.schemas.user import UserCreate, UserRead, UserUpdate
 from project_name.services.user_service import UserService
 
+
 router = APIRouter()
 
 

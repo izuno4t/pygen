@@ -24,6 +24,8 @@ dependencies = [
     "uvicorn[standard]>=0.27",
     "pydantic>=2.0",
     "pydantic-settings>=2.0",
+    "email-validator>=2.0",
+    "sqlym>=0.2.0",
 ]
 
 [project.optional-dependencies]
@@ -45,7 +47,7 @@ Issues = "https://github.com/username/project-name/issues"
 
 [project.scripts]
 project-name = "project_name.__main__:main"
-dev = "uvicorn project_name.main:app --reload"
+dev = "project_name.cli:dev"
 
 [build-system]
 requires = ["hatchling"]

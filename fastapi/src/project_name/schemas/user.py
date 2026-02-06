@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime  # noqa: TC003
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
@@ -21,7 +21,7 @@ class UserUpdate(BaseModel):
     email: EmailStr | None = None
     name: str | None = Field(None, min_length=1, max_length=100)
     is_active: bool | None = None
-    password: str | None = Field(None, min_length=8, max_length=100)
+    password: str | None = None
 
 
 class UserRead(UserBase):

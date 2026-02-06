@@ -9,6 +9,7 @@ from project_name.schemas.user import UserCreate, UserRead, UserUpdate
 
 class UserService:
     async def get_users(self, skip: int = 0, limit: int = 100) -> list[UserRead]:
+        _ = (skip, limit)
         now = datetime.utcnow()
         return [
             UserRead(

@@ -5,6 +5,7 @@ from __future__ import annotations
 from fastapi import APIRouter
 from pydantic import BaseModel
 
+
 router = APIRouter()
 
 

@@ -17,7 +17,7 @@
 ### 1.2 FastAPIの特徴
 
 | 特徴 | 説明 |
-|------|------|
+| --- | --- |
 | 非同期ファースト | ASGI対応、async/await による高性能 |
 | 型ヒント活用 | Pydanticによる自動バリデーション |
 | 依存性注入 | `Depends()` による柔軟なDIシステム |
@@ -26,7 +26,7 @@
 ### 1.3 プロジェクト構造の選択
 
 | 構造 | 用途 | 推奨 |
-|------|------|------|
+| --- | --- | --- |
 | ファイルタイプ別 | マイクロサービス、小規模 | 小〜中規模 |
 | ドメイン別 | モノリス、大規模 | 中〜大規模 |
 
@@ -38,7 +38,7 @@
 
 ### 2.1 ファイルタイプ別構造（小〜中規模）
 
-```
+```text
 project-name/
 ├── .devcontainer/                 # Dev Container設定（オプション）
 │   └── devcontainer.json
@@ -56,7 +56,7 @@ project-name/
 │       │   ├── __init__.py
 │       │   ├── user.py
 │       │   └── item.py
-│       ├── models/                # DBモデル（SQLAlchemy等）
+│       ├── models/                # DBモデル（sqlym等）
 │       │   ├── __init__.py
 │       │   ├── user.py
 │       │   └── item.py
@@ -101,7 +101,7 @@ project-name/
 
 Netflix Dispatch インスパイアの構造。各ドメインが独立したモジュールとして機能。
 
-```
+```text
 project-name/
 ├── src/
 │   └── project_name/
@@ -145,10 +145,10 @@ project-name/
 ### 2.3 ドメイン別構造の各ファイル役割
 
 | ファイル | 役割 |
-|---------|------|
+| --- | --- |
 | `router.py` | APIエンドポイント定義 |
 | `schemas.py` | リクエスト/レスポンスのPydanticモデル |
-| `models.py` | DBモデル（SQLAlchemy等） |
+| `models.py` | DBモデル（sqlym等） |
 | `service.py` | ビジネスロジック |
 | `dependencies.py` | ドメイン固有の依存性 |
 | `constants.py` | 定数定義 |
@@ -171,8 +171,9 @@ dependencies = [
     "uvicorn[standard]>=0.27",
     "pydantic>=2.0",
     "pydantic-settings>=2.0",
+    "email-validator>=2.0",
     # DB関連（必要に応じて）
-    # "sqlalchemy>=2.0",
+    # "sqlym>=0.2.0",
     # "asyncpg>=0.29",          # PostgreSQL async
     # "alembic>=1.13",          # マイグレーション
     # 認証関連（必要に応じて）
@@ -195,7 +196,7 @@ dev = [
 
 [project.scripts]
 # 開発サーバー起動
-dev = "uvicorn project_name.main:app --reload"
+dev = "project_name.cli:dev"
 ```
 
 ### 3.1 pytest追加設定
@@ -224,66 +225,67 @@ extend-ignore = [
 
 # デフォルトターゲット
 help:
-	@echo "Available commands:"
-	@echo "  make install    - Install production dependencies"
-	@echo "  make dev        - Install all dependencies (including dev)"
-	@echo "  make test       - Run tests"
-	@echo "  make lint       - Run linter"
-	@echo "  make format     - Format code"
-	@echo "  make typecheck  - Run type checker"
-	@echo "  make check      - Run all checks (lint, typecheck, test)"
-	@echo "  make run        - Run development server"
-	@echo "  make run-prod   - Run production server"
-	@echo "  make migrate    - Run database migrations"
-	@echo "  make clean      - Remove build artifacts"
+    @echo "Available commands:"
+    @echo "  make install    - Install production dependencies"
+    @echo "  make dev        - Install all dependencies (including dev)"
+    @echo "  make test       - Run tests"
+    @echo "  make lint       - Run linter"
+    @echo "  make format     - Format code"
+    @echo "  make typecheck  - Run type checker"
+    @echo "  make check      - Run all checks (lint, typecheck, test)"
+    @echo "  make run        - Run development server"
+    @echo "  make run-prod   - Run production server"
+    @echo "  make migrate    - Run database migrations"
+    @echo "  make clean      - Remove build artifacts"
 
 # 依存関係
 install:
-	uv sync
+    uv sync
 
 dev:
-	uv sync --dev
-	uv run pre-commit install
+    uv sync --dev
+    uv run pre-commit install
 
 # テスト
 test:
-	uv run pytest
+    uv run pytest
 
 test-cov:
-	uv run pytest --cov --cov-report=html --cov-report=term-missing
+    uv run pytest --cov --cov-report=html --cov-report=term-missing
 
 # コード品質
 lint:
-	uv run ruff check .
+    uv run ruff check .
 
 format:
-	uv run ruff format .
-	uv run ruff check --fix .
+    uv run ruff format .
+    uv run ruff check --fix .
 
 typecheck:
-	uv run mypy .
+    uv run mypy .
 
 check: lint typecheck test
 
 # サーバー実行
 run:
-	uv run uvicorn src.project_name.main:app --reload --host 0.0.0.0 --port 8000
+    uv run uvicorn src.project_name.main:app --reload --host 0.0.0.0 --port 8000
 
 run-prod:
-	uv run uvicorn src.project_name.main:app --host 0.0.0.0 --port 8000 --workers 4
+    uv run uvicorn src.project_name.main:app --host 0.0.0.0 --port 8000 \
+        --workers 4
 
 # DBマイグレーション（Alembic使用時）
 migrate:
-	uv run alembic upgrade head
+    uv run alembic upgrade head
 
 migrate-new:
-	@read -p "Migration message: " msg; \
-	uv run alembic revision --autogenerate -m "$$msg"
+    @read -p "Migration message: " msg; \
+    uv run alembic revision --autogenerate -m "$$msg"
 
 # クリーンアップ
 clean:
-	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage
-	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage
+    find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 ```
 
 ---
@@ -753,7 +755,7 @@ def bad_example(service=get_user_service()):  # これはNG
 ### 9.1 基本ルール
 
 | 状況 | 推奨 | 理由 |
-|------|------|------|
+| --- | --- | --- |
 | I/Oバウンド（DB、外部API） | `async def` | イベントループをブロックしない |
 | CPUバウンド | `def`（同期） | スレッドプールで実行される |
 | ブロッキングSDK使用 | `def` + `run_in_executor` | イベントループをブロックしない |
@@ -1107,7 +1109,7 @@ make run
 ## 付録B: よく使うFastAPI API
 
 | API | 用途 |
-|-----|------|
+| --- | --- |
 | `FastAPI()` | アプリケーションインスタンス作成 |
 | `APIRouter()` | ルーターグループ作成 |
 | `Depends()` | 依存性注入 |
@@ -1123,20 +1125,20 @@ make run
 ## 付録C: よく使うコマンド
 
 | 用途 | コマンド |
-|------|---------|
+| --- | --- |
 | 開発サーバー起動 | `make run` |
 | 本番サーバー起動 | `make run-prod` |
 | テスト実行 | `make test` |
 | マイグレーション実行 | `make migrate` |
 | マイグレーション作成 | `make migrate-new` |
-| Swagger UI | http://localhost:8000/api/v1/docs |
-| ReDoc | http://localhost:8000/api/v1/redoc |
-| OpenAPI JSON | http://localhost:8000/api/v1/openapi.json |
+| Swagger UI | <http://localhost:8000/api/v1/docs> |
+| ReDoc | <http://localhost:8000/api/v1/redoc> |
+| OpenAPI JSON | <http://localhost:8000/api/v1/openapi.json> |
 
 ---
 
-**改訂履歴**
+## 改訂履歴
 
 | バージョン | 日付 | 内容 |
-|-----------|------|------|
+| --- | --- | --- |
 | 1.0 | 2025-01 | 初版作成 |
