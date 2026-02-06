@@ -1,7 +1,7 @@
 .PHONY: help install dev test lint format typecheck check clean run run-dev
 
 help:
-	@echo "Available commands:"
+	@printf "\033[36m💡 Available commands:\033[0m\n"
 	@echo "  make install    - Install production dependencies"
 	@echo "  make dev        - Install all dependencies (including dev)"
 	@echo "  make test       - Run tests"
@@ -36,10 +36,10 @@ typecheck:
 check: lint typecheck test
 
 run:
-	@APP_PATH="$$(python - <<'PY'\nfrom __future__ import annotations\n\nfrom pathlib import Path\nimport tomllib\n\npyproject = Path(\"pyproject.toml\")\nif not pyproject.exists():\n    raise SystemExit(\"pyproject.toml not found\")\n\ndata = tomllib.loads(pyproject.read_text(encoding=\"utf-8\"))\nname = data.get(\"project\", {}).get(\"name\")\nif not name:\n    raise SystemExit(\"project.name not found in pyproject.toml\")\n\nmodule = name.replace(\"-\", \"_\")\nprint(f\"src/{module}/app.py\")\nPY\n)"; \\\n\tuv run streamlit run "$$APP_PATH"
+	uv run streamlit run src/project_name/app.py
 
 run-dev:
-	@APP_PATH="$$(python - <<'PY'\nfrom __future__ import annotations\n\nfrom pathlib import Path\nimport tomllib\n\npyproject = Path(\"pyproject.toml\")\nif not pyproject.exists():\n    raise SystemExit(\"pyproject.toml not found\")\n\ndata = tomllib.loads(pyproject.read_text(encoding=\"utf-8\"))\nname = data.get(\"project\", {}).get(\"name\")\nif not name:\n    raise SystemExit(\"project.name not found in pyproject.toml\")\n\nmodule = name.replace(\"-\", \"_\")\nprint(f\"src/{module}/app.py\")\nPY\n)"; \\\n\tuv run streamlit run "$$APP_PATH" --server.runOnSave=true
+	uv run streamlit run src/project_name/app.py --server.runOnSave=true
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage

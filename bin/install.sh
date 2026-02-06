@@ -6,6 +6,10 @@ BASE="https://github.com/izuno4t/pygen/releases/latest/download"
 BIN_DIR="${HOME}/bin"
 BOOT="${BIN_DIR}/pygen"
 
+RESET="\033[0m"
+GREEN="\033[32m"
+CYAN="\033[36m"
+
 fetch() { curl -fsSL -L "$1" -o "$2"; }
 sha256_verify() {
   file="$1"
@@ -49,9 +53,9 @@ sha256_verify "$tmp" "$(cat "$sum_tmp")"
 chmod +x "$tmp"
 mv "$tmp" "$BOOT"
 
-echo "Installed: $BOOT"
+echo "${GREEN}✅ Installed:${RESET} $BOOT"
 echo ""
-echo "Next:"
+echo "${CYAN}🎯 Next:${RESET}"
 echo "  1) Ensure PATH includes: $BIN_DIR"
 echo "  2) Then run:"
 echo "     pygen ..."
