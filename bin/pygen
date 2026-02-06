@@ -74,14 +74,13 @@ Examples:
 USAGE
 }
 
-if [[ $# -lt 1 ]]; then
-  usage
-  exit 1
-fi
-
 USE_CWD_DEST="false"
 
 if [[ "$1" == -* ]]; then
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    usage
+    exit 0
+  fi
   PROJECT_NAME="$(basename "$PWD")"
   printf "Project name not specified. Use current directory name '%s'? [Y/n]: " "$PROJECT_NAME"
   read -r confirm
