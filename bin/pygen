@@ -4,6 +4,9 @@ set -euo pipefail
 SELF_UPDATE_URL="https://github.com/izuno4t/pygen/releases/latest/download/pygen"
 SELF_UPDATE_SUM_URL="https://github.com/izuno4t/pygen/releases/latest/download/pygen.sha256"
 
+VERSION="dev"
+BUILD_HASH="dev"
+
 RESET=$'\033[0m'
 RED=$'\033[31m'
 YELLOW=$'\033[33m'
@@ -73,6 +76,7 @@ usage() {
   cat <<'USAGE'
 Usage:
   pygen [project-name] -type <plain|fastapi|streamlit> [-runtime <python-version>] [--dest <dir>]
+  pygen -v | --version
 
 Examples:
   pygen my-app -type plain
@@ -84,6 +88,10 @@ USAGE
 USE_CWD_DEST="false"
 
 if [[ "$1" == -* ]]; then
+  if [[ "$1" == "-v" || "$1" == "--version" ]]; then
+    printf "pygen %s (%s)\n" "$VERSION" "$BUILD_HASH"
+    exit 0
+  fi
   if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     usage
     exit 0

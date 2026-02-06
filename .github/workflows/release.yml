@@ -13,6 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Embed version info
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          BUILD_HASH="${GITHUB_SHA::12}"
+          sed -i "s/^VERSION=.*/VERSION=\"${VERSION}\"/" bin/pygen
+          sed -i "s/^BUILD_HASH=.*/BUILD_HASH=\"${BUILD_HASH}\"/" bin/pygen
       - name: Generate checksums
         run: sha256sum bin/pygen | awk '{print $1}' > bin/pygen.sha256
       - name: Upload release assets
