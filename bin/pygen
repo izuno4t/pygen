@@ -34,21 +34,22 @@ local_sha256() {
 }
 
 maybe_self_update() {
-  if [[ "${1:-}" != "$HOME/bin/pygen" ]]; then
+  local target="${1:-}"
+  if [[ -z "$target" ]]; then
     return
   fi
 
   local remote_sum local_sum new_file sum_file
-  new_file="${1}.new"
-  sum_file="${1}.sha256"
+  new_file="${target}.new"
+  sum_file="${target}.sha256"
   if ! curl -fsSL -L -o "$sum_file" "$SELF_UPDATE_SUM_URL"; then
     return
   fi
   remote_sum="$(cat "$sum_file")"
   rm -f "$sum_file"
 
-  if [[ -x "$1" ]]; then
-    local_sum="$(local_sha256 "$1")"
+  if [[ -x "$target" ]]; then
+    local_sum="$(local_sha256 "$target")"
   else
     local_sum=""
   fi
@@ -60,7 +61,7 @@ maybe_self_update() {
   if curl -fsSL -L -o "$new_file" "$SELF_UPDATE_URL"; then
     if sha256_verify "$new_file" "$remote_sum"; then
       chmod +x "$new_file"
-      mv "$new_file" "$1"
+      mv "$new_file" "$target"
     fi
   fi
   rm -f "$new_file"
