@@ -4,11 +4,11 @@ set -euo pipefail
 SELF_UPDATE_URL="https://github.com/izuno4t/pygen/releases/latest/download/pygen"
 SELF_UPDATE_SUM_URL="https://github.com/izuno4t/pygen/releases/latest/download/pygen.sha256"
 
-RESET="\033[0m"
-RED="\033[31m"
-YELLOW="\033[33m"
-GREEN="\033[32m"
-CYAN="\033[36m"
+RESET=$'\033[0m'
+RED=$'\033[31m'
+YELLOW=$'\033[33m'
+GREEN=$'\033[32m'
+CYAN=$'\033[36m'
 
 sha256_verify() {
   local file="$1"
@@ -89,10 +89,10 @@ if [[ "$1" == -* ]]; then
     exit 0
   fi
   PROJECT_NAME="$(basename "$PWD")"
-  printf "${CYAN}🙀 Project name not specified. Use current directory name '%s'? [Y/n]: ${RESET}" "$PROJECT_NAME"
+  printf "%s🙀 Project name not specified. Use current directory name '%s'? [Y/n]: %s" "$CYAN" "$PROJECT_NAME" "$RESET"
   read -r confirm
   if [[ -n "$confirm" && ! "$confirm" =~ ^[Yy]$ ]]; then
-    echo "${RED}😿 Aborted.${RESET}"
+    printf "%s😿 Aborted.%s\n" "$RED" "$RESET"
     exit 1
   fi
   DEST_DIR="."
@@ -173,11 +173,11 @@ fi
 
 if [[ "$USE_CWD_DEST" == "true" ]]; then
   if find "$DEST_DIR" -mindepth 1 -maxdepth 1 ! -name ".git" | read -r _; then
-    echo "${YELLOW}👻  Warning: destination is not empty. Existing files may be overwritten.${RESET}" >&2
+    printf "%s👻  Warning: destination is not empty. Existing files may be overwritten.%s\n" "$YELLOW" "$RESET" >&2
   fi
 else
   if [[ -e "$DEST_DIR" ]]; then
-    echo "${RED}👻 Destination already exists: $DEST_DIR${RESET}" >&2
+    printf "%s👻 Destination already exists: %s%s\n" "$RED" "$DEST_DIR" "$RESET" >&2
     exit 1
   fi
 fi
@@ -231,4 +231,5 @@ PY
 
 echo "$RUNTIME_VERSION" > "$DEST_DIR/.python-version"
 
-echo "${GREEN}👏🏻 Created:${RESET} $PROJECT_NAME (path: $DEST_DIR, template: $TEMPLATE_TYPE, package: $PACKAGE_NAME, runtime: $RUNTIME_VERSION)"
+printf "%s👏🏻 Created:%s %s (path: %s, template: %s, package: %s, runtime: %s)\n" \
+  "$GREEN" "$RESET" "$PROJECT_NAME" "$DEST_DIR" "$TEMPLATE_TYPE" "$PACKAGE_NAME" "$RUNTIME_VERSION"
