@@ -1,4 +1,4 @@
-.PHONY: help install dev test test-cov lint format typecheck check clean run run-prod migrate migrate-new
+.PHONY: help install dev test test-cov lint format typecheck check clean run run-prod migrate migrate-new api-test
 
 help:
 	@printf "\033[36m💡 Available commands:\033[0m\n"
@@ -12,6 +12,7 @@ help:
 	@echo "  make run        - Run development server"
 	@echo "  make run-prod   - Run production server"
 	@echo "  make migrate    - Run database migrations"
+	@echo "  make api-test   - Run Postman API tests (newman)"
 	@echo "  make clean      - Remove build artifacts"
 
 install:
@@ -51,6 +52,9 @@ migrate:
 migrate-new:
 	@read -p "Migration message: " msg; \
 	uv run alembic revision --autogenerate -m "$$msg"
+
+api-test:
+	newman run postman/collection.json -e postman/environment.json
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage

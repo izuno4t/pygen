@@ -1,0 +1,213 @@
+{
+  "info": {
+    "name": "FastAPI Template",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('status healthy', function () { pm.expect(pm.response.json().status).to.eql('healthy'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /ready",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/ready"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "GET /api/v1/users",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('array response', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/v1/users",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"name\": \"Test User\",\n  \"password\": \"securepassword123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('has id', function () { pm.expect(pm.response.json().id).to.eql(1); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /api/v1/users/1",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/users/1"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('id is 1', function () { pm.expect(pm.response.json().id).to.eql(1); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/v1/users/1",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated User\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/users/1"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('name updated', function () { pm.expect(pm.response.json().name).to.eql('Updated User'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/v1/users/1",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/users/1"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Items",
+      "item": [
+        {
+          "name": "GET /api/v1/items",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/items"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('array response', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /api/v1/items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sample Item\",\n  \"description\": \"Example\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/items"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('id is 1', function () { pm.expect(pm.response.json().id).to.eql(1); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

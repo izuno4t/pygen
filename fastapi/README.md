@@ -13,6 +13,7 @@ FastAPI を使った API プロジェクトのテンプレートです。
 
 - Python（`python` または `python3`）
 - `uv`
+- `newman`（Postman CLI。`make api-test` で使用）
 
 ## インストール
 
@@ -35,6 +36,7 @@ make test      # テスト
 make lint      # リント
 make format    # フォーマット
 make typecheck # 型チェック
+make api-test  # Postman APIテスト
 ```
 
 ### 追加設定
@@ -45,6 +47,7 @@ make typecheck # 型チェック
 ## 仕様書
 
 - `docs/PYTHON-FASTAPI-SPEC.md`
+- `fastapi/postman/`
 
 ## ライセンス
 
