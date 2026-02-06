@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  markdownlint:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run markdownlint-cli2
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: |
+            **/*.md
+
+  taplo:
+    name: Taplo Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: tamasfe/taplo@v1
+      - name: taplo check (root)
+        run: taplo check --config taplo.toml
+      - name: taplo check (plain)
+        run: taplo check --config plain/taplo.toml plain
+      - name: taplo check (fastapi)
+        run: taplo check --config fastapi/taplo.toml fastapi
+      - name: taplo check (streamlit)
+        run: taplo check --config streamlit/taplo.toml streamlit
+
+  python:
+    name: Python Checks (${{ matrix.template }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        template: [plain, fastapi, streamlit]
+    defaults:
+      run:
+        working-directory: ${{ matrix.template }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: astral-sh/setup-uv@v4
+      - name: Install dependencies
+        run: uv sync --dev
+      - name: Ruff lint
+        run: uv run ruff check .
+      - name: Ruff format
+        run: uv run ruff format --check .
+      - name: mypy
+        run: uv run mypy .
+      - name: pytest
+        run: uv run pytest --allow-no-tests
