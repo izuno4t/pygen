@@ -39,6 +39,8 @@ make typecheck # 型チェック
 make api-test  # Postman APIテスト
 ```
 
+`make api-test` はローカルでAPIサーバーが起動している前提です。先に `make run` を実行してください。
+
 ### 追加設定
 
 - `.env.example` をコピーして `.env` を作成

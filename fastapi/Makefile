@@ -54,6 +54,10 @@ migrate-new:
 	uv run alembic revision --autogenerate -m "$$msg"
 
 api-test:
+	@curl -fsS http://localhost:8000/health >/dev/null || { \
+		echo "❌ API server is not running. Run 'make run' first."; \
+		exit 1; \
+	}
 	newman run postman/collection.json -e postman/environment.json
 
 clean:
