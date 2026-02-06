@@ -1,0 +1,1 @@
+"""Domain-based structure example."""
