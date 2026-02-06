@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SELF_UPDATE_URL="https://github.com/izuno4t/pygen/releases/latest/download/pygen"
+SELF_UPDATE_SUM_URL="https://github.com/izuno4t/pygen/releases/latest/download/pygen.sha256"
+
+sha256_verify() {
+  local file="$1"
+  local sum="$2"
+  if command -v shasum >/dev/null 2>&1; then
+    echo "${sum}  ${file}" | shasum -a 256 -c >/dev/null
+  elif command -v sha256sum >/dev/null 2>&1; then
+    echo "${sum}  ${file}" | sha256sum -c >/dev/null
+  else
+    return 1
+  fi
+}
+
+local_sha256() {
+  local file="$1"
+  if command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$file" | awk '{print $1}'
+  elif command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$file" | awk '{print $1}'
+  else
+    echo ""
+  fi
+}
+
+maybe_self_update() {
+  if [[ "${1:-}" != "$HOME/bin/pygen" ]]; then
+    return
+  fi
+
+  local remote_sum local_sum new_file sum_file
+  new_file="${1}.new"
+  sum_file="${1}.sha256"
+  if ! curl -fsSL -o "$sum_file" "$SELF_UPDATE_SUM_URL"; then
+    return
+  fi
+  remote_sum="$(cat "$sum_file")"
+  rm -f "$sum_file"
+
+  if [[ -x "$1" ]]; then
+    local_sum="$(local_sha256 "$1")"
+  else
+    local_sum=""
+  fi
+
+  if [[ -n "$local_sum" && "$local_sum" == "$remote_sum" ]]; then
+    return
+  fi
+
+  if curl -fsSL -o "$new_file" "$SELF_UPDATE_URL"; then
+    if sha256_verify "$new_file" "$remote_sum"; then
+      chmod +x "$new_file"
+      mv "$new_file" "$1"
+    fi
+  fi
+  rm -f "$new_file"
+}
+
+maybe_self_update "$0"
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  pygen [project-name] -type <plain|fastapi|streamlit> [-runtime <python-version>] [--dest <dir>]
+
+Examples:
+  pygen my-app -type plain
+  pygen -type plain
+  pygen my-app -type fastapi -runtime 3.11.6
+USAGE
+}
+
+if [[ $# -lt 1 ]]; then
+  usage
+  exit 1
+fi
+
+USE_CWD_DEST="false"
+
+if [[ "$1" == -* ]]; then
+  PROJECT_NAME="$(basename "$PWD")"
+  printf "Project name not specified. Use current directory name '%s'? [Y/n]: " "$PROJECT_NAME"
+  read -r confirm
+  if [[ -n "$confirm" && ! "$confirm" =~ ^[Yy]$ ]]; then
+    echo "Aborted."
+    exit 1
+  fi
+  DEST_DIR="."
+  USE_CWD_DEST="true"
+else
+  PROJECT_NAME="$1"
+  shift
+fi
+
+TEMPLATE_TYPE="plain"
+RUNTIME_VERSION=""
+if [[ "$USE_CWD_DEST" != "true" ]]; then
+  DEST_DIR="$PROJECT_NAME"
+fi
+REPO_URL="https://github.com/izuno4t/pygen"
+REPO_BRANCH="main"
+REPO_ARCHIVE_PREFIX="pygen-${REPO_BRANCH}"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -type)
+      TEMPLATE_TYPE="${2:-}"
+      shift 2
+      ;;
+    -runtime)
+      RUNTIME_VERSION="${2:-}"
+      shift 2
+      ;;
+    --dest)
+      DEST_DIR="${2:-}"
+      USE_CWD_DEST="false"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+case "$TEMPLATE_TYPE" in
+  plain|fastapi|streamlit) ;;
+  *)
+    echo "Invalid -type: $TEMPLATE_TYPE" >&2
+    exit 1
+    ;;
+esac
+
+if [[ -z "$RUNTIME_VERSION" ]]; then
+  if command -v pyenv >/dev/null 2>&1; then
+    RUNTIME_VERSION="$(pyenv version-name)"
+  else
+    if command -v python >/dev/null 2>&1; then
+      RUNTIME_VERSION="$(python --version | awk '{print $2}')"
+    elif command -v python3 >/dev/null 2>&1; then
+      RUNTIME_VERSION="$(python3 --version | awk '{print $2}')"
+    else
+      echo "Python runtime not found. Use -runtime to specify." >&2
+      exit 1
+    fi
+  fi
+fi
+
+if [[ "$USE_CWD_DEST" == "true" ]]; then
+  if find "$DEST_DIR" -mindepth 1 -maxdepth 1 ! -name ".git" | read -r _; then
+    echo "Warning: destination is not empty. Existing files may be overwritten." >&2
+  fi
+else
+  if [[ -e "$DEST_DIR" ]]; then
+    echo "Destination already exists: $DEST_DIR" >&2
+    exit 1
+  fi
+fi
+
+mkdir -p "$DEST_DIR"
+curl -fsSL "$REPO_URL/archive/refs/heads/$REPO_BRANCH.tar.gz" \
+  | tar -xz --strip-components=2 -C "$DEST_DIR" "$REPO_ARCHIVE_PREFIX/$TEMPLATE_TYPE"
+
+PACKAGE_NAME="${PROJECT_NAME//-/_}"
+DOMAIN_PACKAGE="${PACKAGE_NAME}_domain"
+
+if [[ -d "$DEST_DIR/src/project_name" ]]; then
+  mv "$DEST_DIR/src/project_name" "$DEST_DIR/src/$PACKAGE_NAME"
+fi
+
+if [[ -d "$DEST_DIR/src/project_name_domain" ]]; then
+  mv "$DEST_DIR/src/project_name_domain" "$DEST_DIR/src/$DOMAIN_PACKAGE"
+fi
+
+find "$DEST_DIR" -type f \( -name "*.py" -o -name "*.toml" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.ini" -o -name "*.json" \) \
+  -print0 | xargs -0 perl -pi -e "s/project_name_domain/$DOMAIN_PACKAGE/g"
+find "$DEST_DIR" -type f \( -name "*.py" -o -name "*.toml" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.ini" -o -name "*.json" \) \
+  -print0 | xargs -0 perl -pi -e "s/project_name/$PACKAGE_NAME/g"
+find "$DEST_DIR" -type f \( -name "*.py" -o -name "*.toml" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.ini" -o -name "*.json" \) \
+  -print0 | xargs -0 perl -pi -e "s/project-name/$PROJECT_NAME/g"
+
+echo "$RUNTIME_VERSION" > "$DEST_DIR/.python-version"
+
+echo "Created: $DEST_DIR (template: $TEMPLATE_TYPE, package: $PACKAGE_NAME, runtime: $RUNTIME_VERSION)"

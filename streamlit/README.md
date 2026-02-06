@@ -1,15 +1,3 @@
-# Streamlit Template
+# Streamlit Project
 
-## セットアップ
-
-```bash
-uv sync --dev
-uv run pre-commit install
-cp .streamlit/secrets.toml.example .streamlit/secrets.toml
-```
-
-## 起動
-
-```bash
-make run
-```
+プロジェクト概要を記載してください。

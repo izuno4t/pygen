@@ -199,7 +199,7 @@ exclude = [
     "venv",
 ]
 
-[tool.ruff]
+[tool.ruff.lint]
 select = [
     "E",      # pycodestyle errors
     "W",      # pycodestyle warnings
@@ -227,14 +227,14 @@ ignore = [
 fixable = ["ALL"]
 unfixable = []
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
     "S101",   # assert使用許可
     "ARG",    # 未使用引数許可（フィクスチャ）
     "PLR2004", # マジックナンバー許可
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["project_name"]
 force-single-line = false
 lines-after-imports = 2
@@ -247,6 +247,8 @@ line-ending = "auto"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
 ```
+
+> NOTE: `tool.ruff.lint` 形式はRuffの正しい設定だが、TOML拡張のスキーマが古い場合にエディタ側でエラー表示されることがある。Ruffのスキーマに更新するか、該当警告を無視する設定を行う。
 
 ### 3.3 mypy設定
 

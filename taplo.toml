@@ -1,0 +1,8 @@
+[format]
+indent_string = "    "
+
+[rule]
+# Allow unknown keys (e.g., tool-specific)
+ignore = [
+  "rule-unknown",
+]
