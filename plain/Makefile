@@ -39,7 +39,7 @@ typecheck:
 check: lint typecheck test
 
 run:
-	uv run python -m project_name
+	@MODULE="$$(python - <<'PY'\nfrom __future__ import annotations\n\nfrom pathlib import Path\nimport tomllib\n\npyproject = Path(\"pyproject.toml\")\nif not pyproject.exists():\n    raise SystemExit(\"pyproject.toml not found\")\n\ndata = tomllib.loads(pyproject.read_text(encoding=\"utf-8\"))\nname = data.get(\"project\", {}).get(\"name\")\nif not name:\n    raise SystemExit(\"project.name not found in pyproject.toml\")\n\nprint(name.replace(\"-\", \"_\"))\nPY\n)"; \\\n\tuv run python -m "$$MODULE"
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage

@@ -36,10 +36,10 @@ typecheck:
 check: lint typecheck test
 
 run:
-	uv run streamlit run src/project_name/app.py
+	@APP_PATH="$$(python - <<'PY'\nfrom __future__ import annotations\n\nfrom pathlib import Path\nimport tomllib\n\npyproject = Path(\"pyproject.toml\")\nif not pyproject.exists():\n    raise SystemExit(\"pyproject.toml not found\")\n\ndata = tomllib.loads(pyproject.read_text(encoding=\"utf-8\"))\nname = data.get(\"project\", {}).get(\"name\")\nif not name:\n    raise SystemExit(\"project.name not found in pyproject.toml\")\n\nmodule = name.replace(\"-\", \"_\")\nprint(f\"src/{module}/app.py\")\nPY\n)"; \\\n\tuv run streamlit run "$$APP_PATH"
 
 run-dev:
-	uv run streamlit run src/project_name/app.py --server.runOnSave=true
+	@APP_PATH="$$(python - <<'PY'\nfrom __future__ import annotations\n\nfrom pathlib import Path\nimport tomllib\n\npyproject = Path(\"pyproject.toml\")\nif not pyproject.exists():\n    raise SystemExit(\"pyproject.toml not found\")\n\ndata = tomllib.loads(pyproject.read_text(encoding=\"utf-8\"))\nname = data.get(\"project\", {}).get(\"name\")\nif not name:\n    raise SystemExit(\"project.name not found in pyproject.toml\")\n\nmodule = name.replace(\"-\", \"_\")\nprint(f\"src/{module}/app.py\")\nPY\n)"; \\\n\tuv run streamlit run "$$APP_PATH" --server.runOnSave=true
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage

@@ -40,10 +40,10 @@ typecheck:
 check: lint typecheck test
 
 run:
-	uv run uvicorn src.project_name.main:app --reload --host 0.0.0.0 --port 8000
+	@MODULE="$$(python - <<'PY'\nfrom __future__ import annotations\n\nfrom pathlib import Path\nimport tomllib\n\npyproject = Path(\"pyproject.toml\")\nif not pyproject.exists():\n    raise SystemExit(\"pyproject.toml not found\")\n\ndata = tomllib.loads(pyproject.read_text(encoding=\"utf-8\"))\nname = data.get(\"project\", {}).get(\"name\")\nif not name:\n    raise SystemExit(\"project.name not found in pyproject.toml\")\n\nprint(name.replace(\"-\", \"_\"))\nPY\n)"; \\\n\tuv run uvicorn "src.$${MODULE}.main:app" --reload --host 0.0.0.0 --port 8000
 
 run-prod:
-	uv run uvicorn src.project_name.main:app --host 0.0.0.0 --port 8000 --workers 4
+	@MODULE="$$(python - <<'PY'\nfrom __future__ import annotations\n\nfrom pathlib import Path\nimport tomllib\n\npyproject = Path(\"pyproject.toml\")\nif not pyproject.exists():\n    raise SystemExit(\"pyproject.toml not found\")\n\ndata = tomllib.loads(pyproject.read_text(encoding=\"utf-8\"))\nname = data.get(\"project\", {}).get(\"name\")\nif not name:\n    raise SystemExit(\"project.name not found in pyproject.toml\")\n\nprint(name.replace(\"-\", \"_\"))\nPY\n)"; \\\n\tuv run uvicorn "src.$${MODULE}.main:app" --host 0.0.0.0 --port 8000 --workers 4
 
 migrate:
 	uv run alembic upgrade head
