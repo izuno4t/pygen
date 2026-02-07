@@ -42,7 +42,8 @@ def test_app_main(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(st, "session_state", {})
 
     class DummyPage:
-        def __init__(self, _fn, title=None, icon=None, default=False):
+        def __init__(self, _fn, title=None, icon=None, default=False, url_path=None):
+            _ = (icon, default, url_path)
             self.title = title
 
     class DummyNav:
