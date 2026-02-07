@@ -78,8 +78,6 @@ maybe_self_update() {
   rm -f "$new_file"
 }
 
-maybe_self_update "$0"
-
 usage() {
   cat <<'USAGE'
 Usage:
@@ -186,6 +184,8 @@ else
   echo "Python runtime not found. Python is required to generate projects." >&2
   exit 1
 fi
+
+maybe_self_update "$0"
 
 if [[ "$USE_CWD_DEST" == "true" ]]; then
   if find "$DEST_DIR" -mindepth 1 -maxdepth 1 ! -name ".git" | read -r _; then
