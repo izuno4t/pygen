@@ -19,7 +19,7 @@ install:
 	uv sync
 
 dev:
-	uv sync --dev
+	uv sync --extra dev
 	uv run pre-commit install
 
 test:

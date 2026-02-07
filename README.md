@@ -30,7 +30,9 @@ curl -fsSL https://github.com/izuno4t/pygen/releases/latest/download/install.sh 
 ## クイックスタート
 
 ```bash
-./bin/pygen my-app -type plain
+./bin/pygen my-app
+cd my-app
+make dev
 ```
 
 ## 使い方

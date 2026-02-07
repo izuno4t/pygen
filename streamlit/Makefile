@@ -16,7 +16,7 @@ install:
 	uv sync
 
 dev:
-	uv sync --dev
+	uv sync --extra dev
 	uv run pre-commit install
 	@echo "Don't forget to copy .streamlit/secrets.toml.example to .streamlit/secrets.toml"
 
