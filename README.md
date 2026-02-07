@@ -1,9 +1,9 @@
 # pygen
 
 Pythonプロジェクト用のジェネレーターです。
-`plain` / `fastapi` / `streamlit` / `lib` の4種類のテンプレートを提供し、`bin/pygen` で生成します。
+`plain` / `fastapi` / `streamlit` / `lib` の4種類のテンプレートを提供し、`pygen` で生成します。
 
-本来は `copier` を使えば良いのですが、運用が煩雑なため必要最小限の機能だけを実装しました。
+本来は [copier](https://copier.readthedocs.io/) を使えば良いのですが、運用が煩雑なため必要最小限の機能だけを実装しました。
 
 ## 特徴
 
@@ -18,7 +18,7 @@ Pythonプロジェクト用のジェネレーターです。
 - Bash
 - `curl`
 - `tar`
-- Python（`python` または `python3`）
+- `python` または `python3`
 - `pyenv`（任意。導入済みなら優先的に使用）
 
 ## インストール
