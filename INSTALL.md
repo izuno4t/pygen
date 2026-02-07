@@ -17,7 +17,6 @@
 ## インストール
 
 ```bash
-<!-- markdownlint-disable-next-line MD013 -->
 curl -fsSL https://github.com/izuno4t/pygen/releases/latest/download/install.sh | sh
 ```
 
