@@ -1,11 +1,11 @@
 # pygen
 
 Pythonプロジェクト用のジェネレーターです。
-`plain` / `fastapi` / `streamlit` の3種類のテンプレートを提供し、`bin/pygen` で生成します。
+`plain` / `fastapi` / `streamlit` / `lib` の4種類のテンプレートを提供し、`bin/pygen` で生成します。
 
 ## 特徴
 
-- 3種類のテンプレート（`plain` / `fastapi` / `streamlit`）
+- 4種類のテンプレート（`plain` / `fastapi` / `streamlit` / `lib`）
 - `pyproject.toml` を中心にした構成
 - テンプレート仕様書を `docs/` に同梱
 - 生成時に `project-name` / `project_name` を自動置換
@@ -36,7 +36,7 @@ curl -fsSL https://github.com/izuno4t/pygen/releases/latest/download/install.sh 
 ## 使い方
 
 ```bash
-pygen [project-name] [-type <plain|fastapi|streamlit>] \
+pygen [project-name] [-type <plain|fastapi|streamlit|lib>] \
   [-runtime <python-version>] [--dest <dir>]
 ```
 
@@ -51,11 +51,14 @@ pygen [project-name] [-type <plain|fastapi|streamlit>] \
 
 # streamlit テンプレート
 ./bin/pygen my-dashboard -type streamlit
+
+# lib テンプレート
+./bin/pygen my-lib -type lib
 ```
 
 ### オプション
 
-- `-type` : テンプレート種別（`plain` / `fastapi` / `streamlit`）。省略時は `plain`
+- `-type` : テンプレート種別（`plain` / `fastapi` / `streamlit` / `lib`）。省略時は `plain`
 - `-runtime` : `.python-version` に書き込むPythonバージョン
 - `--dest` : 出力先ディレクトリ（省略時はプロジェクト名）
 
@@ -74,6 +77,7 @@ pygen [project-name] [-type <plain|fastapi|streamlit>] \
 | `plain` | 汎用Pythonプロジェクト | `docs/PYTHON-PROJECT-SPEC.md` |
 | `fastapi` | FastAPIアプリ | `docs/PYTHON-FASTAPI-SPEC.md` |
 | `streamlit` | Streamlitアプリ | `docs/PYTHON-STREAMLIT-SPEC.md` |
+| `lib` | PyPI向けライブラリ | `library/` |
 
 ## 生成時の挙動
 

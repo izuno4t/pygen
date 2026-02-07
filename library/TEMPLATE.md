@@ -1,6 +1,6 @@
-# FastAPI Template Guide
+# Library Template Guide
 
-このテンプレートは「FastAPIによるAPI開発の基本形」を目的にしています。アプリの起動とAPIテストまでを想定した構成です。
+このテンプレートは「PyPI公開を前提としたPythonライブラリの基本形」を目的にしています。公開用メタデータと最小限の実装/テストを備えます。
 
 ## このテンプレートでできること
 
@@ -8,29 +8,22 @@
 - `ruff` / `mypy` / `pytest` による品質チェックの標準化
 - `pre-commit` を使ったローカル自動チェック
 - `Makefile` での開発コマンド一元化
-- FastAPI / Uvicorn によるAPIサーバーの起動
+- `pyproject.toml` によるPyPI公開向けメタデータ管理
 
 ## ディレクトリ構成
 
 - **`src` レイアウト**: 実行時とテスト時のimport解決を一致させ、配布対象外のファイルが混入しないようにします。
-- **`routers` / `schemas` / `services`**: API層・スキーマ・サービス層を分離します。
-- **`.env.example`**: 環境変数の雛形を用意します。
+- **`tests`**: 単体テストを最初から用意します。
+- **`py.typed`**: 型情報を配布する前提で、型チェックの精度を上げます（必要なら追加）。
 - **`.python-version`**: テンプレート利用時にPythonバージョンを明示できるようにします。
 
 ```text
-fastapi/
+library/
 ├── src/
 │   └── project_name/
-│       ├── main.py               # FastAPIアプリの入口
-│       ├── core/                 # 設定
-│       ├── routers/              # ルーター
-│       ├── schemas/              # スキーマ
-│       ├── services/             # ビジネスロジック
-│       └── utils/                # ユーティリティ
+│       └── __init__.py
 ├── tests/
-│   ├── unit/
-│   └── integration/
-├── .env.example
+│   └── test_basic.py
 ├── .pre-commit-config.yaml
 ├── .python-version
 ├── Makefile
@@ -49,7 +42,6 @@ fastapi/
 ```bash
 uv sync --extra dev
 uv run pre-commit install
-cp .env.example .env
 ```
 
 ## Makeターゲット
@@ -60,14 +52,10 @@ cp .env.example .env
 | `make install` | 本番依存のインストール |
 | `make dev` | 開発依存のインストールとpre-commit設定 |
 | `make test` | テスト実行 |
-| `make test-cov` | カバレッジ付きテスト |
 | `make lint` | リント実行 |
 | `make format` | 自動整形 |
 | `make typecheck` | 型チェック |
 | `make check` | lint/typecheck/test をまとめて実行 |
-| `make run` | 開発サーバー起動 |
-| `make run-prod` | 本番サーバー起動 |
-| `make api-test` | Postman APIテスト |
 | `make clean` | キャッシュ/生成物の削除 |
 
 ## CI（任意）
@@ -78,7 +66,6 @@ CIを導入する場合の基本チェックは以下を推奨します。
 - `make format`
 - `make typecheck`
 - `make test`
-- `uv run bandit -c pyproject.toml -r src/`
 
 TOMLが変更された場合は以下も実行します。
 
