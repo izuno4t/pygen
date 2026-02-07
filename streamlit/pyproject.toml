@@ -89,6 +89,8 @@ exclude = [
     "venv",
 ]
 
+[tool.ruff.lint]
+
 select = [
     "E",
     "W",

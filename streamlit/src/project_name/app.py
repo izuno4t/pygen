@@ -17,9 +17,25 @@ def main() -> None:
     init_session_state()
 
     pages = [
-        st.Page(home.render, title="ホーム", icon="🏠", default=True, url_path="home"),
-        st.Page(dashboard.render, title="ダッシュボード", icon="📊", url_path="dashboard"),
-        st.Page(settings.render, title="設定", icon="⚙️", url_path="settings"),
+        st.Page(
+            home.render,
+            title="ホーム",
+            icon="🏠",
+            default=True,
+            url_path="home",
+        ),
+        st.Page(
+            dashboard.render,
+            title="ダッシュボード",
+            icon="📊",
+            url_path="dashboard",
+        ),
+        st.Page(
+            settings.render,
+            title="設定",
+            icon="⚙️",
+            url_path="settings",
+        ),
     ]
 
     pg = st.navigation(pages)

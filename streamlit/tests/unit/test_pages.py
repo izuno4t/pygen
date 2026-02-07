@@ -34,7 +34,11 @@ def test_page_renderers(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_app_main(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: dict[str, bool] = {"set": False, "run": False}
 
-    monkeypatch.setattr(st, "set_page_config", lambda **_kwargs: calls.__setitem__("set", True))
+    monkeypatch.setattr(
+        st,
+        "set_page_config",
+        lambda **_kwargs: calls.__setitem__("set", True),
+    )
     monkeypatch.setattr(st, "session_state", {})
 
     class DummyPage:

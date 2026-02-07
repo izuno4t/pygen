@@ -90,6 +90,11 @@ exclude = [
     "venv",
 ]
 
+[tool.ruff.lint]
+extend-ignore = ["B008"]
+fixable = ["ALL"]
+unfixable = []
+
 select = [
     "E",
     "W",
@@ -111,9 +116,6 @@ ignore = [
     "B008",
     "PLR0913",
 ]
-extend-ignore = ["B008"]
-fixable = ["ALL"]
-unfixable = []
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
