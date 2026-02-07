@@ -3,6 +3,8 @@
 Pythonプロジェクト用のジェネレーターです。
 `plain` / `fastapi` / `streamlit` / `lib` の4種類のテンプレートを提供し、`bin/pygen` で生成します。
 
+本来は `copier` を使えば良いのですが、運用が煩雑なため必要最小限の機能だけを実装しました。
+
 ## 特徴
 
 - 4種類のテンプレート（`plain` / `fastapi` / `streamlit` / `lib`）
