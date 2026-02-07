@@ -22,12 +22,9 @@ jobs:
         id: tag
         run: |
           tag="$(git tag --points-at HEAD | grep -E '^v' | head -n 1 || true)"
-          if [ -z "$tag" ]; then
-            echo "No v* tag found for this commit."
-            exit 1
-          fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
       - name: Embed version info
+        if: steps.tag.outputs.tag != ''
         run: |
           VERSION="${{ steps.tag.outputs.tag }}"
           VERSION="${VERSION#v}"
@@ -35,8 +32,10 @@ jobs:
           sed -i "s/^VERSION=.*/VERSION=\"${VERSION}\"/" bin/pygen
           sed -i "s/^BUILD_HASH=.*/BUILD_HASH=\"${BUILD_HASH}\"/" bin/pygen
       - name: Generate checksums
+        if: steps.tag.outputs.tag != ''
         run: sha256sum bin/pygen | awk '{print $1}' > bin/pygen.sha256
       - name: Upload release assets
+        if: steps.tag.outputs.tag != ''
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
