@@ -1,44 +1,29 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
+  push:
+    tags:
+      - "v*"
 
 permissions:
   contents: write
 
 jobs:
   release:
-    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          fetch-depth: 0
-      - name: Resolve tag
-        id: tag
-        run: |
-          tag="$(git tag --points-at HEAD | grep -E '^v' | head -n 1 || true)"
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
       - name: Embed version info
-        if: steps.tag.outputs.tag != ''
         run: |
-          VERSION="${{ steps.tag.outputs.tag }}"
-          VERSION="${VERSION#v}"
+          VERSION="${GITHUB_REF_NAME#v}"
           BUILD_HASH="${GITHUB_SHA::12}"
           sed -i "s/^VERSION=.*/VERSION=\"${VERSION}\"/" bin/pygen
           sed -i "s/^BUILD_HASH=.*/BUILD_HASH=\"${BUILD_HASH}\"/" bin/pygen
       - name: Generate checksums
-        if: steps.tag.outputs.tag != ''
         run: sha256sum bin/pygen | awk '{print $1}' > bin/pygen.sha256
       - name: Upload release assets
-        if: steps.tag.outputs.tag != ''
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
           files: |
             bin/pygen
             bin/pygen.sha256
