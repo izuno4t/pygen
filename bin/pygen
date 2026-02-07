@@ -61,10 +61,18 @@ maybe_self_update() {
     return
   fi
 
+  printf "%s⬆️  Update available.%s Update now? [Y/n]: " "$CYAN" "$RESET"
+  read -r confirm
+  if [[ -n "$confirm" && ! "$confirm" =~ ^[Yy]$ ]]; then
+    return
+  fi
+
   if curl -fsSL -L -o "$new_file" "$SELF_UPDATE_URL"; then
     if sha256_verify "$new_file" "$remote_sum"; then
       chmod +x "$new_file"
       mv "$new_file" "$target"
+      printf "%s🔄 Updated:%s %s\n" "$GREEN" "$RESET" "$target"
+      exit 0
     fi
   fi
   rm -f "$new_file"
