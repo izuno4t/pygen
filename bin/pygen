@@ -102,6 +102,7 @@ if [[ "$1" == -* ]]; then
     usage
     exit 0
   fi
+  maybe_self_update "$0"
   PROJECT_NAME="$(basename "$PWD")"
   printf "%s🙀 Project name not specified. Use current directory name '%s'? [Y/n]: %s" "$CYAN" "$PROJECT_NAME" "$RESET"
   read -r confirm
@@ -112,6 +113,7 @@ if [[ "$1" == -* ]]; then
   DEST_DIR="."
   USE_CWD_DEST="true"
 else
+  maybe_self_update "$0"
   PROJECT_NAME="$1"
   shift
 fi
